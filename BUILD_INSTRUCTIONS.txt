@@ -70,3 +70,17 @@ PyInstaller creates them again on every build.
        certutil -hashfile dist\HashReportTool.exe SHA256
 
   That lets you show later which exact build produced a report.
+
+
+5. AUTOMATIC BUILDS ON GITHUB (NO WINDOWS PC NEEDED)
+----------------------------------------------------
+The workflow file .github/workflows/release.yml builds the .exe on GitHub's
+Windows servers. It runs a quick hashing self-test, then publishes a GitHub
+Release containing HashReportTool.exe, SHA256SUMS.txt and README.txt.
+
+To publish a new version:
+   1. Update TOOL_VERSION in hash_report_tool.py (e.g. "v1.1") and commit.
+   2. Tag and push:   git tag v1.1
+                      git push origin v1.1
+   3. The release appears under "Releases" on the GitHub repo page after a
+      few minutes.
