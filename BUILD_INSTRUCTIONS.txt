@@ -82,5 +82,7 @@ To publish a new version:
    1. Update TOOL_VERSION in hash_report_tool.py (e.g. "v1.1") and commit.
    2. Tag and push:   git tag v1.1
                       git push origin v1.1
+   (Or: GitHub > Actions > "Build Windows EXE release" > "Run workflow",
+    enter the version, and the tag is created for you.)
    3. The release appears under "Releases" on the GitHub repo page after a
       few minutes.

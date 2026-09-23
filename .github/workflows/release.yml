@@ -1,12 +1,19 @@
 # Builds HashReportTool.exe on a Windows runner and publishes it as a GitHub
 # Release. Runs when a version tag is pushed, e.g.:
 #     git tag v1.0 && git push origin v1.0
+# or when started by hand from the Actions tab ("Run workflow"), in which case
+# the release tag is created from the "version" input.
 name: Build Windows EXE release
 
 on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Release tag to create (e.g. v1.0)"
+        required: true
+        default: "v1.0"
 
 permissions:
   contents: write
@@ -64,9 +71,9 @@ jobs:
             README.txt
 
       - name: Publish GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}
         shell: pwsh
         run: |
           $notes = @"
@@ -75,5 +82,5 @@ jobs:
           Download **HashReportTool.exe** and see **README.txt** for how to use it.
           SHA-256 of the .exe is in **SHA256SUMS.txt**; keep it with your chain-of-custody records.
           "@
-          gh release create "${{ github.ref_name }}" dist\HashReportTool.exe dist\SHA256SUMS.txt README.txt `
-            --title "Hash Report Tool ${{ github.ref_name }}" --notes $notes
+          gh release create $env:TAG dist\HashReportTool.exe dist\SHA256SUMS.txt README.txt `
+            --target "${{ github.sha }}" --title "Hash Report Tool $env:TAG" --notes $notes
