@@ -1,0 +1,72 @@
+BUILDING HashReportTool.exe
+===========================
+
+You only need to do this if you change the script or need to rebuild the .exe.
+End users do NOT need Python. They only need the finished .exe.
+
+Build on a Windows PC. PyInstaller makes an .exe only for the operating system
+it runs on.
+
+
+1. ONE-TIME SETUP
+-----------------
+a) Install Python 3.10 or newer from https://www.python.org/downloads/windows/
+   - On the first installer screen, tick "Add python.exe to PATH".
+   - Keep "tcl/tk and IDLE" ticked (the default). The GUI needs it.
+
+b) Open Command Prompt and install PyInstaller:
+
+       py -m pip install --upgrade pyinstaller
+
+   The script uses only Python's built-in libraries, so you don't need to
+   install anything else.
+
+
+2. BUILD THE .EXE
+-----------------
+In Command Prompt, go to the folder that contains hash_report_tool.py, e.g.:
+
+       cd C:\path\to\TP_HashingScript
+
+Then run this exact command:
+
+       py -m PyInstaller --onefile --windowed --name HashReportTool hash_report_tool.py
+
+What the flags do:
+   --onefile    Packs everything into one standalone .exe.
+   --windowed   Hides the black console window, so users see only the GUI.
+   --name       Sets the output file name to HashReportTool.exe.
+
+The finished file is:
+
+       dist\HashReportTool.exe
+
+You can delete the "build" folder and "HashReportTool.spec" afterwards.
+PyInstaller creates them again on every build.
+
+
+3. OPTIONAL
+-----------
+* Custom icon:  add  --icon=myicon.ico  to the command.
+* Clean rebuild: add  --clean  to clear PyInstaller's cache first.
+* Test without building: run  py hash_report_tool.py
+
+
+4. NOTES / TROUBLESHOOTING
+--------------------------
+* Antivirus warnings: some antivirus products flag new unsigned PyInstaller
+  .exe files as suspicious. This is a known false positive. Ask IT to
+  whitelist the file, or sign the .exe with your organisation's
+  code-signing certificate.
+* Start-up time: a --onefile .exe unpacks itself to a temp folder on each
+  launch, so it can take a few seconds to open. This is normal.
+* Offline: the script imports no networking libraries and makes no network
+  calls. PyInstaller itself needs internet only for the "pip install" step
+  above, not at build time or when the tool runs.
+* Version number: to change the version shown in reports, edit
+  TOOL_VERSION near the top of hash_report_tool.py and rebuild.
+* Record the SHA-256 of each released HashReportTool.exe, e.g.
+
+       certutil -hashfile dist\HashReportTool.exe SHA256
+
+  That lets you show later which exact build produced a report.
